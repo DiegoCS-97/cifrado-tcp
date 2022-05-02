@@ -1,5 +1,14 @@
 from socket import socket, error
 
+import nacl.utils
+from nacl.public import PrivateKey, SealedBox
+import getpass
+
+skfile = PrivateKey.generate()
+pkfile = skfile.public_key
+
+sealed_box = SealedBox(pkfile)
+
 def main():
     s = socket()
     
@@ -26,7 +35,8 @@ def main():
                     end = input_data == chr(1)
                 if not end:
                     # Almacenar datos.
-                    f.write(input_data)
+                    encrypted = sealed_box.encrypt(input_data)
+                    f.write(encrypted)
                 else:
                     break
     

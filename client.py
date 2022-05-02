@@ -1,16 +1,5 @@
 from socket import socket
 
-import nacl.utils
-
-from nacl.public import PrivateKey, SealedBox
-import getpass
-import pickle
-
-skfile = PrivateKey.generate()
-pkfile = skfile.public_key
-
-sealed_box = SealedBox(pkfile)
-
 def main():
     s = socket()
     s.connect(("localhost", 6030))
@@ -23,7 +12,6 @@ def main():
             # Enviar contenido.
             s.sendall(content)
             content = f.read(1024)
-            encrypted = sealed_box.encrypt(f.encode())
         break
     
     # Se utiliza el caracter de código 1 para indicar
