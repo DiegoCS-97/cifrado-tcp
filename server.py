@@ -4,10 +4,14 @@ import nacl.utils
 from nacl.public import PrivateKey, SealedBox
 import getpass
 
+from nacl.signing import SigningKey
+
 skfile = PrivateKey.generate()
 pkfile = skfile.public_key
 
 sealed_box = SealedBox(pkfile)
+
+signing_key = SigningKey.generate()
 
 def main():
     s = socket()
@@ -36,10 +40,14 @@ def main():
                 if not end:
                     # Almacenar datos.
                     encrypted = sealed_box.encrypt(input_data)
+                    signed = signing_key.sign(encrypted)
                     f.write(encrypted)
                 else:
                     break
     
+    verify_key = signing_key.verify_key
+    verify_key_bytes = verify_key.encode()
+
     print("El archivo se ha recibido correctamente.")
     f.close()
 
